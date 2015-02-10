@@ -208,10 +208,9 @@ function convexConvex(p1, p2) {
  *    -- NOTE: 0.0 <= t <= 1.0 gives the position of the first intersection
  */
 function rayCircle(r, c) {
-	var dx = r.end.x;
-	var dy = r.end.y;
-	//var dd = Math.sqrt(dx * dx + dy * dy);
-	var dd2 = (r.start.x - r.end.x) * (r.start.x - r.end.x) + (r.start.y - r.end.y) * (r.start.y - r.end.y);
+	var dx = r.end.x - r.start.x;
+	var dy = r.end.y - r.start.y;
+	var dd2 = dx * dx + dy * dy;
 	
 	var Dx = r.start.x - c.x;
 	var Dy = r.start.y - c.y;
@@ -224,12 +223,20 @@ function rayCircle(r, c) {
 	if(a < 0)
 		return null;
 
-	var t1 = (-(dx * Dx + dy * Dy) + a) / dd2;
-	var t2 = (-(dx * Dx + dy * Dy) - a) / dd2;
+	if(a === 0)
+	{
+		var t = (-(dx * Dx + dy * Dy)) / dd2;
+		return {'t':t};
+	}
 
-	if(t1)
+	var t1 = (-(dx * Dx + dy * Dy) + Math.sqrt(a)) / dd2;
+	var t2 = (-(dx * Dx + dy * Dy) - Math.sqrt(a)) / dd2;
+
+	console.log(t1 + " " + t2);
+
+	if((t1 < t2 || t2  < 0.0) && t1 >= 0.0 && t1 <= 1.0)
 		return {'t':t1};
-	if(t2)
+	if((t2 <= t1 || t1  < 0.0) && t2 >= 0.0 && t2 <= 1.0)
 		return {'t':t2};
 
 	return null;
