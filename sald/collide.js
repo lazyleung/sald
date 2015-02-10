@@ -218,8 +218,6 @@ function rayCircle(r, c) {
 
 	var a = Math.pow((dx * Dx + dy * Dy), 2) - dd2 * (Dd2 - c.r * c.r);
 
-	console.log(r);
-
 	if(a < 0)
 		return null;
 
@@ -231,8 +229,6 @@ function rayCircle(r, c) {
 
 	var t1 = (-(dx * Dx + dy * Dy) + Math.sqrt(a)) / dd2;
 	var t2 = (-(dx * Dx + dy * Dy) - Math.sqrt(a)) / dd2;
-
-	console.log(t1 + " " + t2);
 
 	if((t1 < t2 || t2  < 0.0) && t1 >= 0.0 && t1 <= 1.0)
 		return {'t':t1};
@@ -251,6 +247,16 @@ function rayCircle(r, c) {
  */
 function rayRectangle(r, b) {
 	//TODO
+	// Get edge of polygon 
+	var x, y;
+	x = r.start.x - r.end.x;
+	y = r.start.y - r.end.y;
+
+	// Get perpendicular of edge to be new axis
+	var temp = x;
+	x = y;
+	y = -temp;
+
 	return null;
 }
 
@@ -262,6 +268,37 @@ function rayRectangle(r, b) {
  *    -- NOTE: 0.0 <= t <= 1.0 gives the position of the first intersection
  */
 function rayConvex(r, p) {
+	var x, y;
+	x = r.start.x - r.end.x;
+	y = r.start.y - r.end.y;
+
+	// Get perpendicular of edge to be new axis
+	var temp = x;
+	x = y;
+	y = -temp;
+
+	var left = 0;
+	var right = 0; 
+
+	for(var i = 0; i < p.length; i++)
+	{
+		var dp = ((r.end.x - r.start.x)*(p[i].y - r.start.y) - (r.end.y - r.start.y)*(p[i].x - r.start.x));
+
+		//var dp = x * p[i].x + y * p[i].y;
+
+		if(dp > 0)
+			left++;
+		else if (dp < 0)
+			right++;
+	}
+
+	if(left > 0 && right > 0)
+	{
+		return {'t':0.5};
+	}
+
+	return null;
+
 	// for(var i = 0; i < p.length; i++)
 	// {
 	// 	// Get edge of polygon 
