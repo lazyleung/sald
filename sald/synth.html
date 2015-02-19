@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="synth.js"></script>
+	</head>
+	<body>
+		<label for="chanel">Chanels</label>
+		<input id="chanel" type="number" min="1" max="2" value="1">
+
+		<br>
+
+		<label for="sampleRate">Sample Rate</label>
+		<input id="sampleRate" type="number" min="0" max="5000" value="2024">
+
+		<label for="bitsPerSample">Bits Per Sample</label>
+		<input id="bitsPerSample" type="number" min="0" max="2048" step="8" value="16">
+
+		<label for="frequency">Frequency</label>
+		<input id="frequency" type="number" min="0" max="2000" value="440">
+
+		<br>
+		
+		<label for="seconds">Lenghth (seconds)</label>
+		<input id="seconds" type="number" min="0" max="60" value="2">
+
+		<label for="volume">Volume</label>
+		<input id="volume" type="range" min="0" max="32767" value="32767">
+
+		<br>
+
+		<button onclick="generate()">Generate</button>
+
+		<div id="dump">
+			<p id="dump-contents">
+		</div>
+	</body>
+</html>
