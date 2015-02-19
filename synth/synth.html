@@ -4,6 +4,9 @@
 		<script type="text/javascript" src="synth.js"></script>
 	</head>
 	<body>
+		<h1>Instructions</h1>
+		<p> After adjusting options press play to play a sound, or hold spacebar to start and keep playing sound.</p>
+
 		<label for="chanel">Chanels</label>
 		<input id="chanel" type="number" min="1" max="2" value="1">
 
@@ -19,7 +22,7 @@
 		<input id="frequency" type="number" min="0" max="2000" value="440">
 
 		<br>
-		
+
 		<label for="seconds">Lenghth (seconds)</label>
 		<input id="seconds" type="number" min="0" max="60" value="2">
 
@@ -27,8 +30,26 @@
 		<input id="volume" type="range" min="0" max="32767" value="32767">
 
 		<br>
+		<h3>These are porpotional to the length</h3>
 
-		<button onclick="generate()">Generate</button>
+		<label for="attack">Attack</label>
+		<input id="attack" type="range" min="0" max="100" value="10">
+
+		<label for="sustain">Sustain</label>
+		<input id="sustain" type="range" min="0" max="100" value="50">
+
+		<br>
+		<h3>These are the wave for frequency modulation, keep colume at 0 for no effect</h3>
+
+		<label for="fm">FM</label>
+		<input id="fm" type="number" min="0" max="2000" value="440">
+
+		<label for="fmV">FM vol</label>
+		<input id="fmV" type="range" min="0" max="32767" value="0">
+
+		<br>
+
+		<button onclick="play()">Play</button>
 
 		<div id="dump">
 			<p id="dump-contents">

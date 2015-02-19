@@ -1,6 +1,31 @@
 // Referenced from: http://www.sk89q.com/playground/jswav/
 // Cuurently code doesn't play music in chrome, works fine in firefox
 
+var audio = null;
+
+window.addEventListener('keydown', function(evt){
+    if (evt.keyCode === 32 && audio === null) {
+        console.log("Pressed!");
+        audio = generate();
+        audio.load();
+        audio.play();
+    }
+});
+
+window.addEventListener('keyup', function(evt){
+    if (evt.keyCode ===  32) {
+        console.log("Released!");
+        audio.pause();
+        audio = null;
+    }
+});
+
+function play() {
+    audio = generate();
+    audio.load();
+    audio.play();
+}
+
 function generate() {
     var channels = document.getElementById("chanel").value;
     var sampleRate = document.getElementById("sampleRate").value;
@@ -10,8 +35,14 @@ function generate() {
     var seconds = document.getElementById("seconds").value;
     var volume = document.getElementById("volume").value;
 
-    var attack = 0;
-    var decay = 0;
+    var attack = seconds * document.getElementById("attack").value / 100;
+    var sustain = seconds * document.getElementById("sustain").value / 100;
+    var decay = Math.pow(0.5*Math.log((frequency*volume)/sampleRate),2);
+
+    var FM = document.getElementById("fm").value;
+    var FMV = document.getElementById("fmV").value;
+
+    var distortion = 0;
 
     var data = [];
     var samples = 0;
@@ -19,7 +50,21 @@ function generate() {
     // Generate the sine waveform
     for (var i = 0; i < sampleRate * seconds; i++) {
         for (var c = 0; c < channels; c++) {
-            var v = volume * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency);
+            var v;
+            var m = 0;
+            if(i <= sampleRate * attack)
+            {
+                v = volume * (i/(sampleRate*attack));
+            } else if (i - sampleRate * attack <= sampleRate * sustain) {
+                v = volume;
+            } else {
+                v = volume * Math.pow((1-((i-(sampleRate*(attack + sustain)))/(sampleRate*(seconds-attack-sustain)))),decay);
+            }
+            if(FM !== 0)
+            {
+                m = FMV * Math.sin((2 * Math.PI) * (i / sampleRate) * FM)
+            }
+            v = v * Math.sin((2 * Math.PI) * (i / sampleRate) * frequency + m);
             data.push(pack("v", v));
             samples++;
         }
@@ -76,14 +121,9 @@ function generate() {
 
     audio = new Audio(dataURI);
     audio.addEventListener('ended', function() { audio = null; });
-    audio.addEventListener('loadeddata', function(e) 
-    { 
-        e.target.play(); 
-    });
     audio.autoplay = false;
     audio.setAttribute('type', 'audio/wav');
-    audio.load();
-
+    //audio.setAttribute('loop', 'loop');
     return audio;
     
     // Generate the hex dump
