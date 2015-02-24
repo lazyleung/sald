@@ -2,21 +2,34 @@
 // Cuurently code doesn't play music in chrome, works fine in firefox
 
 var audio = null;
+var tone = null;
+
+var context;
+window.addEventListener('load', init, false);
+function init() {
+  try {
+    // Fix up for prefixing
+    window.AudioContext = window.AudioContext||window.webkitAudioContext;
+    context = new AudioContext();
+  }
+  catch(e) {
+    alert('Web Audio API is not supported in this browser');
+  }
+}
 
 window.addEventListener('keydown', function(evt){
-    if (evt.keyCode === 32 && audio === null) {
+    if (evt.keyCode === 32 && tone === null) {
         console.log("Pressed!");
-        audio = generate();
-        audio.load();
-        audio.play();
+        tone = wave();
+        tone.start(context.currentTime);
     }
 });
 
 window.addEventListener('keyup', function(evt){
     if (evt.keyCode ===  32) {
         console.log("Released!");
-        audio.pause();
-        audio = null;
+        tone.stop(context.currentTime);
+        tone = null;
     }
 });
 
@@ -24,6 +37,14 @@ function play() {
     audio = generate();
     audio.load();
     audio.play();
+}
+
+function wave() {
+    var wave = context.createOscillator();
+    wave.type = "sine";
+    wave.frequency.value = document.getElementById("frequency").value;
+    wave.connect(context.destination);
+    return wave;
 }
 
 function generate() {
